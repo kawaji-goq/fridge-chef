@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             NutrientsSeeder::class,
             CommonIngredientsSeeder::class,
             IngredientNutrientValuesSeeder::class,
+            IngredientUnitConversionsSeeder::class,
             StaplerecipesSeeder::class,
         ]);
     }

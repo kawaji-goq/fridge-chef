@@ -2,7 +2,7 @@
     @if($proposalState === 'queued')
         <div wire:poll.1500ms="poll" class="hidden"></div>
     @endif
-    <h1 class="text-2xl font-semibold text-gray-900">今日の献立</h1>
+    <x-app-header title="今日の献立" />
 
     @if($proposalState === 'idle')
         <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-5 space-y-4">
@@ -24,7 +24,7 @@
                                 wire:click="toggleMustUse('{{ $item->ingredient_id }}')"
                                 class="rounded-full px-3 py-1.5 text-xs font-medium border transition
                                     {{ $isSelected
-                                        ? 'bg-emerald-600 text-white border-emerald-600'
+                                        ? 'bg-rose-200 text-rose-900 border-rose-200'
                                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50' }}"
                             >
                                 {{ $isSelected ? '✓ ' : '' }}{{ $item->ingredient->displayName() }}@if($isExpiringSoon && ! $isSelected)<span class="text-amber-600 ml-1">!</span>@endif
@@ -45,14 +45,14 @@
                 type="button"
                 wire:click="request"
                 @disabled($this->inventoryItems->isEmpty())
-                class="w-full rounded-lg bg-emerald-600 text-white font-semibold py-3 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full rounded-lg bg-rose-200 text-rose-900 font-semibold py-3 hover:bg-rose-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >今日の献立を提案する</button>
         </div>
     @endif
 
     @if($proposalState === 'queued')
         <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-6 text-center space-y-3">
-            <div class="inline-block animate-spin rounded-full size-8 border-4 border-gray-200 border-t-emerald-600"></div>
+            <div class="inline-block animate-spin rounded-full size-8 border-4 border-gray-200 border-t-rose-300"></div>
             <p class="text-gray-700">提案を生成中…</p>
             <p class="text-xs text-gray-500">数秒で結果が出ます</p>
         </div>
@@ -167,7 +167,7 @@
                                 type="button"
                                 wire:click="adopt('{{ $cand->id }}')"
                                 wire:confirm="この献立を採用しますか？在庫から必要分を減らします。"
-                                class="rounded-lg bg-emerald-600 text-white text-sm font-semibold px-4 py-2 hover:bg-emerald-700"
+                                class="rounded-lg bg-rose-200 text-rose-900 text-sm font-semibold px-4 py-2 hover:bg-rose-300"
                             >これにする</button>
                         @endif
                     </div>
@@ -178,7 +178,7 @@
                 <button
                     type="button"
                     wire:click="resetProposal"
-                    class="text-sm text-emerald-700 hover:text-emerald-900 underline"
+                    class="text-sm text-rose-700 hover:text-rose-900 underline"
                 >もう一度提案する</button>
             </div>
 
@@ -222,13 +222,10 @@
                 <button
                     type="button"
                     wire:click="resetProposal"
-                    class="flex-1 rounded-lg bg-emerald-600 text-white font-semibold py-2 hover:bg-emerald-700"
+                    class="flex-1 rounded-lg bg-rose-200 text-rose-900 font-semibold py-2 hover:bg-rose-300"
                 >別の献立を提案</button>
             </div>
         </div>
     @endif
 
-    <nav class="text-center text-sm pt-4">
-        <a href="/inventory" class="text-emerald-700 hover:text-emerald-900 underline">← 冷蔵庫に戻る</a>
-    </nav>
 </div>

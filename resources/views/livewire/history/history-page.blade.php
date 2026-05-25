@@ -1,8 +1,5 @@
 <div class="mx-auto max-w-md p-4 space-y-4">
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-900">作った履歴</h1>
-        <a href="/inventory" class="text-sm text-emerald-700 hover:text-emerald-900 underline">← 冷蔵庫へ</a>
-    </div>
+    <x-app-header title="作った履歴" />
 
     @php
         $grouped = $this->adoptions->groupBy(fn ($a) => $a->adopted_at->copy()->startOfDay()->toDateString());
@@ -71,12 +68,9 @@
         <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-8 text-center text-gray-500">
             <p>まだ作った料理がありません。</p>
             <p class="text-sm mt-2">
-                <a href="/propose" class="text-emerald-700 hover:text-emerald-900 underline">献立を提案してもらう</a>
+                <a href="/propose" class="text-rose-700 hover:text-rose-900 underline">献立を提案してもらう</a>
             </p>
         </div>
     @endforelse
 
-    <nav class="text-center text-sm pt-2">
-        <a href="/propose" class="text-emerald-700 hover:text-emerald-900 underline">献立を提案 →</a>
-    </nav>
 </div>

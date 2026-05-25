@@ -37,6 +37,19 @@ class InventoryList extends Component
 
     public string $expiresType = 'best_before';
 
+    // 編集モード用
+    public ?string $editingItemId = null;
+
+    public ?string $editQuantity = null;
+
+    public ?int $editUnitId = null;
+
+    public string $editStorageLocation = 'fridge';
+
+    public ?string $editExpiresAt = null;
+
+    public string $editExpiresType = 'best_before';
+
     #[Computed]
     public function units(): \Illuminate\Database\Eloquent\Collection
     {
@@ -90,6 +103,12 @@ class InventoryList extends Component
         $this->selectedIngredientId = $ingredientId;
         $this->selectedIngredientName = $name;
         $this->ingredientQuery = $name;
+
+        // 単位を自動選択：選んだ食材の base_unit
+        $ingredient = Ingredient::find($ingredientId);
+        if ($ingredient) {
+            $this->unitId = (int) $ingredient->base_unit_id;
+        }
     }
 
     public function clearIngredient(): void
@@ -139,6 +158,62 @@ class InventoryList extends Component
         InventoryItem::where('user_id', Auth::id())
             ->where('id', $itemId)
             ->delete();
+        unset($this->items);
+    }
+
+    public function startEdit(string $itemId): void
+    {
+        $item = InventoryItem::where('user_id', Auth::id())
+            ->where('id', $itemId)
+            ->first();
+        if (! $item) {
+            return;
+        }
+        $this->editingItemId = $item->id;
+        $this->editQuantity = (string) (float) $item->quantity;
+        $this->editUnitId = (int) $item->unit_id;
+        $this->editStorageLocation = $item->storage_location;
+        $this->editExpiresAt = $item->expires_at?->toDateString();
+        $this->editExpiresType = $item->expires_type ?? 'best_before';
+        $this->resetErrorBag();
+    }
+
+    public function cancelEdit(): void
+    {
+        $this->editingItemId = null;
+        $this->editQuantity = null;
+        $this->editUnitId = null;
+        $this->editStorageLocation = 'fridge';
+        $this->editExpiresAt = null;
+        $this->editExpiresType = 'best_before';
+        $this->resetErrorBag();
+    }
+
+    public function saveEdit(): void
+    {
+        $this->validate([
+            'editQuantity' => 'required|numeric|min:0.0001',
+            'editUnitId' => 'required|integer|exists:units,id',
+            'editStorageLocation' => 'required|in:fridge,freezer,pantry',
+        ]);
+
+        $item = InventoryItem::where('user_id', Auth::id())
+            ->where('id', $this->editingItemId)
+            ->firstOrFail();
+
+        $unit = Unit::findOrFail($this->editUnitId);
+        $baseQuantity = $this->computeBaseQuantity($item->ingredient, $unit, (float) $this->editQuantity);
+
+        $item->update([
+            'quantity' => $this->editQuantity,
+            'unit_id' => $unit->id,
+            'base_quantity' => $baseQuantity,
+            'storage_location' => $this->editStorageLocation,
+            'expires_at' => $this->editExpiresAt ?: null,
+            'expires_type' => $this->editExpiresAt ? $this->editExpiresType : null,
+        ]);
+
+        $this->cancelEdit();
         unset($this->items);
     }
 

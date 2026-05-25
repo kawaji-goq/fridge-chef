@@ -7,7 +7,7 @@ use App\Livewire\Recipes\RecipeSearch;
 use App\Livewire\Settings\SettingsPage;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect('/inventory'));
+Route::get('/', fn () => redirect('/propose'));
 Route::get('/inventory', InventoryList::class)->name('inventory');
 Route::get('/propose', ProposalPage::class)->name('propose');
 Route::get('/search', RecipeSearch::class)->name('search');

@@ -1,8 +1,5 @@
 <div class="mx-auto max-w-md p-4 space-y-6">
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-900">料理から探す</h1>
-        <a href="/inventory" class="text-sm text-emerald-700 hover:text-emerald-900 underline">← 冷蔵庫へ</a>
-    </div>
+    <x-app-header title="料理から探す" />
 
     @if(! $this->selectedRecipe)
         <section class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-4 space-y-3">
@@ -13,7 +10,7 @@
                     wire:model.live.debounce.300ms="query"
                     placeholder="例：肉じゃが、カレー、パスタ"
                     autocomplete="off"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-base">
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-rose-400 focus:ring-rose-300 text-base">
 
                 @if($this->searchResults)
                     <ul class="absolute z-10 mt-1 w-full rounded-lg bg-white shadow-lg ring-1 ring-gray-200 overflow-hidden max-h-96 overflow-y-auto">
@@ -21,7 +18,7 @@
                             <li>
                                 <button type="button"
                                     wire:click="selectRecipe('{{ $r['id'] }}')"
-                                    class="w-full text-left px-3 py-2 hover:bg-emerald-50 text-sm flex items-center justify-between">
+                                    class="w-full text-left px-3 py-2 hover:bg-rose-50 text-sm flex items-center justify-between">
                                     <span>{{ $r['title'] }}</span>
                                     <span class="text-xs text-gray-500">{{ $r['minutes'] }}分・{{ $r['servings'] }}人前</span>
                                 </button>
@@ -113,7 +110,7 @@
 
             <button type="button"
                 wire:click="clearSelection"
-                class="block w-full rounded-lg bg-white text-emerald-700 ring-1 ring-emerald-300 font-semibold py-2 hover:bg-emerald-50">
+                class="block w-full rounded-lg bg-white text-emerald-700 ring-1 ring-emerald-300 font-semibold py-2 hover:bg-rose-50">
                 別の料理を探す
             </button>
         </article>

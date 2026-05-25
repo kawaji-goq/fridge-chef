@@ -20,6 +20,7 @@ class UnitsSeeder extends Seeder
             ['code' => 'tbsp',  'label_ja' => '大さじ',     'kind' => 'volume'],
             ['code' => 'tsp',   'label_ja' => '小さじ',     'kind' => 'volume'],
             ['code' => 'cup',   'label_ja' => 'カップ',     'kind' => 'volume'],
+            ['code' => 'go',    'label_ja' => '合',         'kind' => 'volume'],
         ];
 
         $now = now();

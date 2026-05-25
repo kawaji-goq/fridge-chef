@@ -1,8 +1,5 @@
 <div class="mx-auto max-w-md p-4 space-y-6">
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-900">設定</h1>
-        <a href="/inventory" class="text-sm text-emerald-700 hover:text-emerald-900 underline">← 冷蔵庫へ</a>
-    </div>
+    <x-app-header title="設定" />
 
     @if($this->savedFlash)
         <div class="rounded-lg bg-emerald-100 text-emerald-900 px-4 py-3 text-sm ring-1 ring-emerald-200">
@@ -17,12 +14,12 @@
             <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">大人</label>
                 <input type="number" min="1" max="20" wire:model="householdAdults"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-base">
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-rose-400 focus:ring-rose-300 text-base">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">子供</label>
                 <input type="number" min="0" max="20" wire:model="householdChildren"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-base">
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-rose-400 focus:ring-rose-300 text-base">
             </div>
         </div>
         <p class="text-xs text-gray-500">提案レシピの分量参考用です。</p>
@@ -57,7 +54,7 @@
                     wire:click="togglePreference('{{ $opt['tag'] }}')"
                     class="rounded-full px-3 py-1.5 text-xs font-medium border transition
                         {{ $isSelected
-                            ? 'bg-emerald-600 text-white border-emerald-600'
+                            ? 'bg-rose-200 text-rose-900 border-rose-200'
                             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50' }}">
                     {{ $isSelected ? '✓ ' : '' }}{{ $opt['label'] }}
                 </button>
@@ -75,7 +72,7 @@
                 wire:model.live.debounce.300ms="dislikeQuery"
                 placeholder="例：ピーマン、しいたけ"
                 autocomplete="off"
-                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-base">
+                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-rose-400 focus:ring-rose-300 text-base">
 
             @if($this->dislikeSuggestions)
                 <ul class="absolute z-10 mt-1 w-full rounded-lg bg-white shadow-lg ring-1 ring-gray-200 overflow-hidden">
@@ -83,7 +80,7 @@
                         <li>
                             <button type="button"
                                 wire:click="addDislike('{{ $s['id'] }}')"
-                                class="w-full text-left px-3 py-2 hover:bg-emerald-50 text-sm">
+                                class="w-full text-left px-3 py-2 hover:bg-rose-50 text-sm">
                                 + {{ $s['name'] }}
                             </button>
                         </li>
@@ -111,7 +108,7 @@
 
     <button type="button"
         wire:click="save"
-        class="block w-full rounded-lg bg-emerald-600 text-white font-semibold py-3 hover:bg-emerald-700">
+        class="block w-full rounded-lg bg-rose-200 text-rose-900 font-semibold py-3 hover:bg-rose-300">
         設定を保存
     </button>
 </div>
