@@ -22,7 +22,7 @@ class CrawlRakutenRecipesCommand extends Command
             return self::FAILURE;
         }
 
-        $client = new RakutenRecipeClient($appId, $accessKey);
+        $client = new RakutenRecipeClient($appId, $accessKey, (string) config('app.url'));
 
         $this->info('カテゴリ一覧を取得中…');
         $categories = $client->categoryList('large');

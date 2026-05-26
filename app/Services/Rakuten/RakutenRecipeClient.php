@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
  * 楽天レシピ API クライアント (新 OpenAPI 仕様)。
  * - エンドポイント: https://openapi.rakuten.co.jp/recipems/api/Recipe
  * - 認証: applicationId (UUID) + accessKey
+ * - Referer 必須: Rakuten Developers で登録した「許可された Web サイト」と一致する URL
  * - カテゴリ一覧: CategoryList
  * - カテゴリ別ランキング: CategoryRanking（4 件/カテゴリ）
  * - レート制限: 1 秒以上の間隔（規約）
@@ -24,6 +25,7 @@ class RakutenRecipeClient
     public function __construct(
         private readonly string $applicationId,
         private readonly string $accessKey,
+        private readonly string $referer,
     ) {}
 
     /**
@@ -32,12 +34,13 @@ class RakutenRecipeClient
      */
     public function categoryList(string $categoryType = 'large'): array
     {
-        $resp = Http::get(self::BASE.'/CategoryList/'.self::CATEGORY_LIST_VERSION, [
-            'applicationId' => $this->applicationId,
-            'accessKey' => $this->accessKey,
-            'categoryType' => $categoryType,
-            'format' => 'json',
-        ]);
+        $resp = Http::withHeaders(['Referer' => $this->referer])
+            ->get(self::BASE.'/CategoryList/'.self::CATEGORY_LIST_VERSION, [
+                'applicationId' => $this->applicationId,
+                'accessKey' => $this->accessKey,
+                'categoryType' => $categoryType,
+                'format' => 'json',
+            ]);
         if (! $resp->successful()) {
             Log::warning('Rakuten CategoryList failed', ['status' => $resp->status(), 'body' => $resp->body()]);
 
@@ -53,12 +56,13 @@ class RakutenRecipeClient
      */
     public function categoryRanking(string $categoryId): array
     {
-        $resp = Http::get(self::BASE.'/CategoryRanking/'.self::CATEGORY_RANKING_VERSION, [
-            'applicationId' => $this->applicationId,
-            'accessKey' => $this->accessKey,
-            'categoryId' => $categoryId,
-            'format' => 'json',
-        ]);
+        $resp = Http::withHeaders(['Referer' => $this->referer])
+            ->get(self::BASE.'/CategoryRanking/'.self::CATEGORY_RANKING_VERSION, [
+                'applicationId' => $this->applicationId,
+                'accessKey' => $this->accessKey,
+                'categoryId' => $categoryId,
+                'format' => 'json',
+            ]);
         if (! $resp->successful()) {
             Log::warning('Rakuten CategoryRanking failed', [
                 'categoryId' => $categoryId,
