@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // ホスト側 Nginx からのプロキシを信頼（HTTPS スキームを正しく解釈するため）
+        $middleware->trustProxies(at: '*');
         $middleware->web(append: [
             \App\Http\Middleware\EnsureAnonymousUser::class,
         ]);

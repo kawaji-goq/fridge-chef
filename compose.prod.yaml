@@ -1,0 +1,54 @@
+# 本番運用用の compose overlay。
+# 使い方: docker compose -f compose.yaml -f compose.prod.yaml up -d
+#
+# Sail (dev) との差分:
+# - DB / Redis / Mailpit のポートをホストに公開しない（127.0.0.1 のみ）
+# - app は 127.0.0.1:${APP_PORT}:80 のみ（外部からは Nginx 経由）
+# - Vite ポートは閉じる
+# - Mailpit は外す
+# - queue は queue:work + 自動再起動
+# - schedule:work を追加（楽天 API 日次クロールなど）
+
+services:
+    laravel.test:
+        ports: !override
+            - '127.0.0.1:${APP_PORT:-8090}:80'
+        environment:
+            LARAVEL_SAIL: 1
+            APP_ENV: production
+            APP_DEBUG: 'false'
+        restart: unless-stopped
+
+    mysql:
+        ports: !override []
+        restart: unless-stopped
+
+    redis:
+        ports: !override []
+        restart: unless-stopped
+
+    mailpit:
+        profiles: ['dev-only']
+
+    queue:
+        command: 'php artisan queue:work --tries=3 --timeout=120 --max-time=3600'
+        restart: unless-stopped
+        environment:
+            LARAVEL_SAIL: 1
+            APP_ENV: production
+            APP_DEBUG: 'false'
+
+    scheduler:
+        image: 'sail-8.5/app'
+        command: 'php artisan schedule:work'
+        environment:
+            LARAVEL_SAIL: 1
+            APP_ENV: production
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - laravel.test
+        restart: unless-stopped
