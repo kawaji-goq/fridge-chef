@@ -45,6 +45,7 @@ services:
         image: 'sail-8.5/app'
         command: 'php artisan schedule:work'
         environment:
+            WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             APP_ENV: production
         volumes:

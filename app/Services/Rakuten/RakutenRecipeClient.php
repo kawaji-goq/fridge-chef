@@ -6,14 +6,16 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * 楽天レシピ API クライアント。
+ * 楽天レシピ API クライアント (新 OpenAPI 仕様)。
+ * - エンドポイント: https://openapi.rakuten.co.jp/recipems/api/Recipe
+ * - 認証: applicationId (UUID) + accessKey
  * - カテゴリ一覧: CategoryList
  * - カテゴリ別ランキング: CategoryRanking（4 件/カテゴリ）
  * - レート制限: 1 秒以上の間隔（規約）
  */
 class RakutenRecipeClient
 {
-    private const BASE = 'https://app.rakuten.co.jp/services/api/Recipe';
+    private const BASE = 'https://openapi.rakuten.co.jp/recipems/api/Recipe';
 
     private const CATEGORY_LIST_VERSION = '20170426';
 
@@ -21,18 +23,18 @@ class RakutenRecipeClient
 
     public function __construct(
         private readonly string $applicationId,
+        private readonly string $accessKey,
     ) {}
 
     /**
      * カテゴリ一覧を取得。
      * 戻り値の各カテゴリは ['categoryId' => '10|123', 'categoryName' => '...', 'categoryUrl' => '...']
-     *
-     * 注意: 楽天 API は categoryId を 'large.medium.small' 形式（例: "10-100-200"）で扱う場面もある
      */
     public function categoryList(string $categoryType = 'large'): array
     {
         $resp = Http::get(self::BASE.'/CategoryList/'.self::CATEGORY_LIST_VERSION, [
             'applicationId' => $this->applicationId,
+            'accessKey' => $this->accessKey,
             'categoryType' => $categoryType,
             'format' => 'json',
         ]);
@@ -53,6 +55,7 @@ class RakutenRecipeClient
     {
         $resp = Http::get(self::BASE.'/CategoryRanking/'.self::CATEGORY_RANKING_VERSION, [
             'applicationId' => $this->applicationId,
+            'accessKey' => $this->accessKey,
             'categoryId' => $categoryId,
             'format' => 'json',
         ]);

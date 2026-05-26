@@ -15,13 +15,14 @@ class CrawlRakutenRecipesCommand extends Command
     public function handle(): int
     {
         $appId = env('RAKUTEN_APP_ID');
-        if (! $appId) {
-            $this->error('RAKUTEN_APP_ID が .env に設定されていません。docs/rakuten-setup.md を参照。');
+        $accessKey = env('RAKUTEN_ACCESS_KEY');
+        if (! $appId || ! $accessKey) {
+            $this->error('RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY が .env に設定されていません。docs/rakuten-setup.md を参照。');
 
             return self::FAILURE;
         }
 
-        $client = new RakutenRecipeClient($appId);
+        $client = new RakutenRecipeClient($appId, $accessKey);
 
         $this->info('カテゴリ一覧を取得中…');
         $categories = $client->categoryList('large');
