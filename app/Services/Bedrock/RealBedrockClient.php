@@ -94,6 +94,53 @@ class RealBedrockClient implements BedrockClient
         }
     }
 
+    public function parseIngredients(string $raw): string
+    {
+        if (trim($raw) === '') {
+            return '';
+        }
+
+        $systemPrompt = '日本のレシピの材料リストを正規化してください。'
+            ."\n\n"
+            ."ルール:\n"
+            ."- 各材料を 1 行で記述\n"
+            ."- 形式: 食材名 数量 単位（半角スペース区切り）\n"
+            ."- 装飾記号（★●☆◯◎▲▼※■□◆◇）は除去\n"
+            ."- 括弧内の補足（(中)・(薄切り) 等）は除去\n"
+            ."- 単位を統一: 重量=g/kg、容量=ml/l、個数=個/パック/袋、計量=大さじ/小さじ/カップ/合\n"
+            ."- \"cc\" → \"ml\"、\"本\" → \"個\"（食材により）、\"枚\" → \"個\"\n"
+            ."- 分数は小数に: \"1/2\" → \"0.5\"\n"
+            ."- 数量不明（少々/適量/お好みで）の行は省略\n"
+            ."- 食材名は標準的な表記（豚バラ肉、玉ねぎ、にんじん等）\n\n"
+            .'正規化結果のみを出力（前置きや説明、Markdown装飾は不要）。';
+
+        try {
+            $response = $this->client->invokeModel([
+                'modelId' => $this->modelId,
+                'contentType' => 'application/json',
+                'accept' => 'application/json',
+                'body' => json_encode([
+                    'anthropic_version' => 'bedrock-2023-05-31',
+                    'max_tokens' => 800,
+                    'system' => $systemPrompt,
+                    'messages' => [['role' => 'user', 'content' => $raw]],
+                ], JSON_UNESCAPED_UNICODE),
+            ]);
+
+            $body = json_decode($response['body']->getContents(), true);
+            $this->usage = [
+                'input_tokens' => $body['usage']['input_tokens'] ?? 0,
+                'output_tokens' => $body['usage']['output_tokens'] ?? 0,
+            ];
+
+            return trim($body['content'][0]['text'] ?? '');
+        } catch (\Throwable $e) {
+            Log::warning('Bedrock parseIngredients failed', ['error' => $e->getMessage()]);
+
+            return '';
+        }
+    }
+
     public function driver(): string
     {
         return 'real';

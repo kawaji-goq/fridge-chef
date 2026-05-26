@@ -38,12 +38,13 @@ class RecipeSearch extends Component
         return Recipe::where('title', 'like', "%{$q}%")
             ->orderBy('title')
             ->limit(15)
-            ->get(['id', 'title', 'total_cook_minutes', 'servings_default'])
+            ->get(['id', 'title', 'total_cook_minutes', 'servings_default', 'attribution_label'])
             ->map(fn ($r) => [
                 'id' => $r->id,
                 'title' => $r->title,
                 'minutes' => $r->total_cook_minutes,
                 'servings' => $r->servings_default,
+                'attribution_label' => $r->attribution_label,
             ])->all();
     }
 

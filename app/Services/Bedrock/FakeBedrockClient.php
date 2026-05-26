@@ -28,6 +28,24 @@ class FakeBedrockClient implements BedrockClient
         return "[Fake] 初心者向け詳細手順 のモック\n\n".($recipe['instructions'] ?? '');
     }
 
+    public function parseIngredients(string $raw): string
+    {
+        // Fake は簡易整形のみ（装飾記号除去・カッコ除去・cc→ml）
+        $lines = preg_split('/\r?\n/', $raw) ?: [];
+        $out = [];
+        foreach ($lines as $line) {
+            $line = preg_replace('/^[★●☆◯◎▲▼※・■□◆◇▪▫\s]+/u', '', $line) ?? $line;
+            $line = preg_replace('/[（(].*?[)）]/u', ' ', $line) ?? $line;
+            $line = preg_replace('/(\d+\s*)cc\b/i', '$1ml', $line) ?? $line;
+            $line = trim(preg_replace('/\s+/u', ' ', $line) ?? $line);
+            if ($line !== '') {
+                $out[] = $line;
+            }
+        }
+
+        return implode("\n", $out);
+    }
+
     public function driver(): string
     {
         return 'fake';

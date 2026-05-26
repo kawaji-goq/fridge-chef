@@ -17,7 +17,12 @@ class Recipe extends Model
     protected $fillable = [
         'source_type', 'external_id', 'attribution_url', 'attribution_label',
         'title', 'locale', 'servings_default', 'total_cook_minutes',
-        'instructions', 'instructions_beginner', 'created_by_user_id',
+        'instructions', 'instructions_beginner', 'materials_text', 'image_url',
+        'created_by_user_id',
+    ];
+
+    protected $casts = [
+        'materials_text' => 'array',
     ];
 
     public function ingredients(): HasMany

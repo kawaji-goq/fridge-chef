@@ -24,6 +24,14 @@ interface BedrockClient
     public function enhanceInstructions(array $recipe): string;
 
     /**
+     * クックパッド等のフリーフォーマット材料テキストを、ルールパーサーが処理しやすい
+     * 正規化された材料リスト（"食材名 数量 単位" を 1 行ずつ）に整形する。
+     * 例: "★鶏もも肉(皮なし)  1枚" → "鶏もも肉 1 枚"
+     * 失敗時は空文字を返す。
+     */
+    public function parseIngredients(string $raw): string;
+
+    /**
      * 実装の種別（fake/real）。デバッグ用。
      */
     public function driver(): string;

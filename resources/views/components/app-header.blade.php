@@ -6,6 +6,7 @@
         ['path' => 'propose', 'label' => '材料から'],
         ['path' => 'search', 'label' => '料理から'],
         ['path' => 'inventory', 'label' => '冷蔵庫'],
+        ['path' => 'my-recipes', 'label' => 'マイレシピ'],
         ['path' => 'history', 'label' => '履歴'],
         ['path' => 'settings', 'label' => '設定'],
     ];
