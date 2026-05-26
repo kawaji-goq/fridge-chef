@@ -112,5 +112,5 @@ Schedule::command('recipes:crawl-rakuten')->dailyAt('03:00');
 |---|---|---|
 | `RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY が .env に設定されていません` | 環境変数未設定 | `.env` に両方追記して再起動 |
 | `wrong_parameter` / `specify valid applicationId` | applicationId or accessKey 不正、もしくはアプリのスコープに楽天レシピ API が含まれていない | Rakuten Developers でアプリ設定を確認 |
-| `REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING` (403) | Referer ヘッダが Rakuten 登録の「許可された Web サイト」と一致していない | `.env` の `APP_URL` を本番ドメインに設定（クライアントは `APP_URL` を Referer に送る） |
+| `REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING` (403) | 実際には `Origin` ヘッダが Rakuten 登録の「許可された Web サイト」と一致していない（API エラーメッセージが misleading） | `.env` の `APP_URL` を本番ドメインに設定（クライアントは `APP_URL` を `Origin` ヘッダで送る） |
 | カテゴリ別ランキングが 0 件 | カテゴリ ID 形式の不一致 | API は時々仕様変更があるためログ確認 |
