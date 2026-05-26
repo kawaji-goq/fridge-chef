@@ -13,6 +13,9 @@ services:
     laravel.test:
         ports: !override
             - '127.0.0.1:${APP_PORT:-8090}:80'
+        depends_on: !override
+            - mysql
+            - redis
         environment:
             LARAVEL_SAIL: 1
             APP_ENV: production
